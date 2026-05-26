@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crónicas de Dos Reinos | Bitácora del Jugador</title>
+  <style>
+    :root {
+      --ink: #eef4ff;
+      --muted: #aebbd2;
+      --panel: rgba(13, 18, 34, 0.86);
+      --panel-strong: rgba(23, 31, 55, 0.94);
+      --night: #060912;
+      --royal: #c92732;
+      --gold: #ffd16a;
+      --ember: #ff5c28;
+      --teal: #18e0c4;
+      --violet: #6757ff;
+      --green: #68d391;
+      --cyan: #4ae3ff;
+      --steel: #9fb2c8;
+      --line: rgba(255, 255, 255, 0.13);
+      --line-gold: rgba(255, 209, 106, 0.34);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 22% 18%, rgba(255,209,106,0.28), transparent 24%),
+        radial-gradient(circle at 80% 22%, rgba(255,92,40,0.25), transparent 27%),
+        radial-gradient(circle at 50% 92%, rgba(74,227,255,0.16), transparent 30%),
+        linear-gradient(135deg, rgba(3,5,12,0.96), rgba(17,24,47,0.92)),
+        url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80") center/cover fixed;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.38), transparent 72%);
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+
+    .hidden { display: none !important; }
+
+    .shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 34px;
+    }
+
+    .login-wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .login {
+      width: min(1080px, 100%);
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(13,18,34,0.92), rgba(13,18,34,0.78));
+      border: 1px solid var(--line-gold);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      backdrop-filter: blur(18px);
+    }
+
+    .intro {
+      min-height: 900px;
+      padding: clamp(26px, 5vw, 54px);
+      padding-top: clamp(520px, 62vh, 650px);
+      color: white;
+      background:
+        radial-gradient(circle at 36% 22%, rgba(255,209,106,0.26), transparent 26%),
+        linear-gradient(145deg, rgba(5,7,14,0.50), rgba(114,16,24,0.42)),
+        url("cronicas-hero.png") center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 22px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .intro::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(3,5,12,0.96) 0%, rgba(3,5,12,0.72) 34%, rgba(3,5,12,0.10) 72%, transparent 100%),
+        linear-gradient(90deg, rgba(3,5,12,0.38), transparent 46%);
+      z-index: -1;
+    }
+
+    .intro > div:first-child {
+      max-width: 620px;
+    }
+
+    .intro h1 {
+      max-width: 620px;
+      margin: 0 0 12px;
+      font-family: Impact, "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: clamp(1.75rem, 3.65vw, 3.42rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.38), 0 0 30px rgba(255,209,106,0.25);
+    }
+
+    .intro p {
+      max-width: 540px;
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .legend-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .legend-strip span {
+      min-height: 74px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.28);
+      background: linear-gradient(135deg, rgba(255,209,106,0.14), rgba(74,227,255,0.08));
+      display: flex;
+      align-items: end;
+      font-weight: 800;
+      font-size: 0.86rem;
+      border-radius: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.16);
+    }
+
+    .auth-panel {
+      padding: clamp(24px, 4vw, 42px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      color: var(--ink);
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--gold);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-size: 0.78rem;
+    }
+
+    .auth-panel h2, .section-title h2 {
+      margin: 0;
+      font-family: Impact, "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .field { display: grid; gap: 7px; }
+
+    label {
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: rgba(238,244,255,0.74);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: var(--ink);
+      padding: 13px 14px;
+      min-height: 46px;
+      outline: none;
+      border-radius: 8px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 136px;
+      line-height: 1.45;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(255, 209, 106, 0.15), 0 0 30px rgba(255, 92, 40, 0.12);
+    }
+
+    input::placeholder, textarea::placeholder { color: rgba(238,244,255,0.42); }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn {
+      min-height: 46px;
+      border: 0;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #17213d, #26305d);
+      color: white;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      border-radius: 8px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.22);
+    }
+
+    .btn.primary { background: linear-gradient(135deg, var(--royal), var(--ember), var(--gold)); color: #180b05; box-shadow: 0 12px 26px rgba(255,92,40,0.22); }
+    .btn.gold { background: linear-gradient(135deg, var(--gold), var(--ember)); color: #1f1602; }
+    .btn.teal { background: linear-gradient(135deg, var(--teal), var(--cyan)); color: #06111f; }
+    .btn.ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line-gold);
+    }
+    .btn.danger { background: #8f1d21; }
+    .btn.icon {
+      width: 46px;
+      padding: 0;
+      font-size: 1.05rem;
+    }
+
+    .topbar {
+      min-height: 88px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      color: white;
+      margin-bottom: 18px;
+    }
+
+    .identity h1 {
+      margin: 0;
+      font-family: Impact, "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .identity p {
+      margin: 9px 0 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.4;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: minmax(260px, 330px) 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .side, .workbench {
+      background: linear-gradient(145deg, rgba(13,18,34,0.88), rgba(14,22,42,0.80));
+      border: 1px solid var(--line-gold);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      backdrop-filter: blur(18px);
+    }
+
+    .side { padding: 18px; }
+    .workbench { padding: clamp(18px, 3vw, 28px); min-height: 690px; }
+
+    .banner {
+      padding: 20px;
+      color: white;
+      background:
+        url("cronicas-logo-cut.png") center 18px/78% auto no-repeat,
+        radial-gradient(circle at 82% 18%, rgba(255,209,106,0.28), transparent 28%),
+        linear-gradient(135deg, rgba(6,9,18,0.94), rgba(79,18,28,0.92), rgba(17,25,54,0.94));
+      min-height: 226px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 8px;
+      padding-top: 128px;
+    }
+
+    .banner h2 {
+      margin: 0;
+      font-family: Impact, "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .badge {
+      padding: 7px 9px;
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.22);
+      font-weight: 900;
+      font-size: 0.76rem;
+      border-radius: 999px;
+    }
+
+    .score-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      min-height: 96px;
+      padding: 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      border-radius: 8px;
+    }
+
+    .metric strong {
+      font-family: Impact, "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--gold);
+    }
+
+    .metric span {
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .week-nav {
+      display: grid;
+      grid-template-columns: 46px 1fr 46px;
+      gap: 8px;
+      margin: 16px 0;
+      align-items: stretch;
+    }
+
+    .week-label {
+      min-height: 46px;
+      display: grid;
+      place-items: center;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--ink);
+      border-radius: 8px;
+    }
+
+    .progress {
+      height: 12px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.12);
+      margin: 10px 0 16px;
+      border-radius: 999px;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--teal), var(--cyan), var(--gold), var(--royal));
+      transition: width 0.25s ease;
+      border-radius: 999px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .tab {
+      min-height: 48px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.07);
+      color: var(--ink);
+      font-weight: 900;
+      border-radius: 8px;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .tab:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-gold);
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--royal), var(--ember));
+      color: white;
+      border-color: transparent;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .section-title p {
+      max-width: 520px;
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .mission-grid, .kingdom-grid, .role-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mission-card, .kingdom-card, .role-card {
+      min-height: 132px;
+      padding: 16px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.085), rgba(255,255,255,0.045));
+      border: 1px solid rgba(255,255,255,0.12);
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      border-radius: 8px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .mission-card:hover, .kingdom-card:hover, .role-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--line-gold);
+      background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.055));
+    }
+
+    .mission-card {
+      grid-template-columns: 24px 1fr auto;
+      align-items: start;
+    }
+
+    .mission-card input, .kingdom-card input {
+      width: 20px;
+      height: 20px;
+      min-height: 20px;
+      accent-color: var(--teal);
+      margin: 2px 0 0;
+    }
+
+    .mission-card h3, .kingdom-card h3, .role-card h3 {
+      margin: 0;
+      font-family: Impact, "Trebuchet MS", "Segoe UI", sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.1;
+    }
+
+    .mission-card p, .kingdom-card p, .role-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.38;
+    }
+
+    .points {
+      min-width: 48px;
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,209,106,0.18);
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 0.85rem;
+      border-radius: 999px;
+    }
+
+    .kingdom-card {
+      position: relative;
+      min-height: 164px;
+      overflow: hidden;
+    }
+
+    .kingdom-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 6px;
+      background: var(--teal);
+    }
+
+    .kingdom-card:nth-child(2)::before { background: var(--gold); }
+    .kingdom-card:nth-child(3)::before { background: var(--ember); }
+    .kingdom-card:nth-child(4)::before { background: var(--violet); }
+    .kingdom-card:nth-child(5)::before { background: var(--green); }
+    .kingdom-card:nth-child(6)::before { background: var(--royal); }
+
+    .kingdom-head {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding-top: 6px;
+    }
+
+    .journal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .note-box {
+      background: linear-gradient(145deg, rgba(255,255,255,0.085), rgba(255,255,255,0.045));
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .note-box.full { grid-column: 1 / -1; }
+
+    .council-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .warrior-row, .scribe-row {
+      display: grid;
+      grid-template-columns: minmax(110px, 1fr) 96px 1.5fr;
+      gap: 9px;
+      align-items: center;
+      background: linear-gradient(145deg, rgba(255,255,255,0.085), rgba(255,255,255,0.045));
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .scribe-row {
+      grid-template-columns: minmax(120px, 1.1fr) minmax(108px, 0.9fr) 88px minmax(150px, 1.5fr);
+    }
+
+    .warrior-row input, .scribe-row input { min-height: 42px; padding: 10px; }
+
+    .hierarchy {
+      display: grid;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .rank-line {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 9px;
+      align-items: center;
+      padding: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-weight: 900;
+      border-radius: 8px;
+    }
+
+    .rank-line span:first-child {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: var(--night);
+      color: white;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      border-radius: 8px;
+    }
+
+    .locked {
+      margin-top: 12px;
+      padding: 11px 12px;
+      background: rgba(143, 29, 33, 0.10);
+      color: #6e1619;
+      font-weight: 800;
+      border: 1px solid rgba(143, 29, 33, 0.22);
+      border-radius: 8px;
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%) translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--night);
+      color: white;
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+      transition: 0.22s ease;
+      z-index: 5;
+      font-weight: 800;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .login, .dashboard { grid-template-columns: 1fr; }
+      .intro { min-height: 880px; padding-top: clamp(500px, 62vh, 630px); }
+      .topbar { grid-template-columns: 1fr; }
+      .toolbar { justify-content: flex-start; }
+      .side { order: 2; }
+      .workbench { order: 1; min-height: auto; }
+    }
+
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 18px, 1180px); padding-top: 10px; }
+      .legend-strip, .score-block, .tabs, .mission-grid, .kingdom-grid, .role-grid, .journal-grid { grid-template-columns: 1fr; }
+      .section-title { display: block; }
+      .warrior-row, .scribe-row { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+      .btn.icon { width: 46px; }
+      .week-nav .btn.icon { width: 46px; }
+      .intro { min-height: 840px; padding-top: 500px; }
+      .intro h1 { font-size: clamp(1.85rem, 10vw, 3rem); }
+    }
+  </style>
+</head>
+<body>
+  <main id="authScreen" class="login-wrap">
+    <section class="login" aria-label="Entrada a la plataforma">
+      <div class="intro">
+        <div>
+          <h1>Crónicas: Batalla de Dos Reinos</h1>
+          <p>Una plataforma de campaña para jóvenes y jóvenes adultos: puntos, territorios, decisiones y liderazgo en una sola bitácora. Tu rol importa. Tu reino también.</p>
+        </div>
+        <div class="legend-strip" aria-label="Pilares del juego">
+          <span>Sube de rango</span>
+          <span>Conquista mapa</span>
+          <span>Deja historia</span>
+        </div>
+      </div>
+
+      <form class="auth-panel" onsubmit="initApp(event)">
+        <p class="eyebrow">Plataforma del jugador</p>
+        <h2>Activa tu perfil de campaña</h2>
+        <div class="field">
+          <label for="inName">Nombre del jugador</label>
+          <input type="text" id="inName" autocomplete="name" placeholder="Ej. Valeria" required>
+        </div>
+        <div class="field">
+          <label for="inPass">Clave secreta</label>
+          <input type="password" id="inPass" autocomplete="current-password" placeholder="Tu clave personal" required>
+        </div>
+        <div class="field">
+          <label for="role">Rol dentro del juego</label>
+          <select id="role" onchange="toggleRegionField()">
+            <option value="Cronista">Cronista: registra reyes, reinos, puntos y territorios</option>
+            <option value="Rey">Señor de la región: lidera, nombra su región y guía guerreros</option>
+            <option value="Centinela">Centinela: vigila hábitos y alertas de la semana</option>
+            <option value="Guerrero">Guerrero: cumple misiones y conquista territorios</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="kingdom">Nombre de tu reino</label>
+          <input type="text" id="kingdom" placeholder="Ej. Reino de Aurora, Casa de León, Valle de Fuego" required>
+        </div>
+        <div id="regionField" class="field hidden">
+          <label for="regionName">Nombre de tu región</label>
+          <input type="text" id="regionName" placeholder="Ej. Región Norte, Puerto del Alba, Distrito 7">
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="submit">Entrar a la gesta</button>
+          <a class="btn ghost" href="https://sites.google.com/view/cronicas-de-2-reinos/inicio" target="_blank" rel="noreferrer">Materiales</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <main id="mainApp" class="shell hidden">
+    <header class="topbar">
+      <div class="identity">
+        <p class="eyebrow" style="color:#ffd166">Panel de campaña</p>
+        <h1 id="uDisplay">Crónicas</h1>
+        <p id="roleLine">Registra tu semana, protege tu historia y avanza con intención.</p>
+      </div>
+      <nav class="toolbar" aria-label="Acciones generales">
+        <a class="btn ghost" style="color:white;border-color:rgba(255,255,255,0.35)" href="https://sites.google.com/view/cronicas-de-2-reinos/inicio" target="_blank" rel="noreferrer">Materiales</a>
+        <button class="btn ghost" style="color:white;border-color:rgba(255,255,255,0.35)" onclick="exportChronicle()">Exportar</button>
+        <button class="btn danger" onclick="logout()">Salir</button>
+      </nav>
+    </header>
+
+    <section class="dashboard">
+      <aside class="side" aria-label="Resumen de campaña">
+        <div class="banner">
+          <div>
+            <p class="eyebrow" style="color:#ffd166">Base activa</p>
+            <h2 id="bannerTitle">Reino</h2>
+          </div>
+          <div class="badge-row">
+            <span id="roleBadge" class="badge">Rol</span>
+            <span id="weekBadge" class="badge">Semana 1</span>
+          </div>
+        </div>
+
+        <div class="score-block">
+          <div class="metric">
+            <strong id="ptsNumber">0</strong>
+            <span>Puntos</span>
+          </div>
+          <div class="metric">
+            <strong id="rankNumber">I</strong>
+            <span>Rango</span>
+          </div>
+        </div>
+
+        <div class="week-nav">
+          <button class="btn icon ghost" type="button" onclick="changeWeek(-1)" aria-label="Semana anterior">‹</button>
+          <div id="weekLabel" class="week-label">Semana 1</div>
+          <button class="btn icon ghost" type="button" onclick="changeWeek(1)" aria-label="Semana siguiente">›</button>
+        </div>
+
+        <label for="progressBar">Progreso de la semana</label>
+        <div id="progressBar" class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+        <div id="lockedNotice" class="locked hidden">Semana sellada. Puedes revisarla, pero no editarla.</div>
+        <div class="hierarchy" aria-label="Jerarquía del juego">
+          <div class="rank-line"><span>1</span><strong>Cronista</strong></div>
+          <div class="rank-line"><span>2</span><strong>Señor de la región</strong></div>
+          <div class="rank-line"><span>3</span><strong>Centinela</strong></div>
+          <div class="rank-line"><span>4</span><strong>Guerrero</strong></div>
+        </div>
+      </aside>
+
+      <section class="workbench">
+        <div class="tabs" role="tablist" aria-label="Secciones">
+          <button id="tab-missions" class="tab active" onclick="showView('missions')">Misiones</button>
+          <button id="tab-kingdoms" class="tab" onclick="showView('kingdoms')">Reinos</button>
+          <button id="tab-journal" class="tab" onclick="showView('journal')">Diario</button>
+          <button id="tab-council" class="tab" onclick="showView('council')">Consejo</button>
+        </div>
+
+        <section id="view-missions" class="view">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">Semana de decisiones</p>
+              <h2>Misiones personales</h2>
+              <p>Cada acción suma puntos y deja rastro de crecimiento. No se trata solo de marcar tareas: se trata de ver qué decisión fortaleció tu reino.</p>
+            </div>
+          </div>
+          <div id="missionGrid" class="mission-grid"></div>
+        </section>
+
+        <section id="view-kingdoms" class="view hidden">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">Campaña mayor</p>
+              <h2>Territorios y conquistas</h2>
+              <p>Los territorios representan hábitos, pruebas y victorias interiores. Conquistar uno añade una marca permanente a tu semana.</p>
+            </div>
+          </div>
+          <div id="kingdomGrid" class="kingdom-grid"></div>
+        </section>
+
+        <section id="view-journal" class="view hidden">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">Memoria del jugador</p>
+              <h2>Diario de crónica</h2>
+              <p>Registra lo que ocurrió, lo que aprendiste y la decisión que quieres llevar a la siguiente semana.</p>
+            </div>
+          </div>
+          <div class="journal-grid">
+            <div class="note-box">
+              <label for="decision">Decisión clave</label>
+              <textarea id="decision" oninput="save()" placeholder="¿Qué decisión marcó esta semana?"></textarea>
+            </div>
+            <div class="note-box">
+              <label for="verse">Verso o frase guía</label>
+              <textarea id="verse" oninput="save()" placeholder="Escribe el verso, frase o idea que quieres recordar."></textarea>
+            </div>
+            <div class="note-box full">
+              <label for="diary">Relato de la semana</label>
+              <textarea id="diary" oninput="save()" placeholder="Cuenta tu crónica: avances, tropiezos, alianzas, aprendizajes."></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-council" class="view hidden">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">Herramienta de rol</p>
+              <h2 id="councilTitle">Consejo del reino</h2>
+              <p id="councilIntro">Cada rol tiene una forma distinta de registrar su aporte al juego.</p>
+            </div>
+          </div>
+          <div id="roleTools" class="role-grid"></div>
+          <div id="kingPanel" class="hidden" style="margin-top:16px">
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">Registro del señor de la región</p>
+                <h2>Guerreros bajo tu región</h2>
+              </div>
+            </div>
+            <div id="warriorInputs" class="council-list"></div>
+          </div>
+          <div id="scribePanel" class="hidden" style="margin-top:16px">
+            <div class="section-title">
+              <div>
+                <p class="eyebrow">Archivo superior</p>
+                <h2>Reyes, reinos y territorios</h2>
+                <p>El Cronista conserva el registro general: nombre del rey o señor regional, reino representado, puntos obtenidos y territorios conquistados.</p>
+              </div>
+            </div>
+            <div id="scribeInputs" class="council-list"></div>
+          </div>
+        </section>
+
+        <div class="footer-actions">
+          <div class="actions">
+            <button class="btn gold" onclick="sealWeek()">Sellar semana</button>
+            <button class="btn ghost" onclick="editSealedWeek()">Editar esta semana</button>
+          </div>
+          <button class="btn danger" onclick="restartWeek()">Reiniciar datos</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const missions = [
+      { id: "read", title: "Leer la crónica", desc: "Completa la lectura o material asignado para esta semana.", pts: 10 },
+      { id: "pray", title: "Oración del reino", desc: "Dedica un tiempo consciente a orar por tu vida, equipo y reino.", pts: 10 },
+      { id: "share", title: "Compartir fe", desc: "Cuenta una idea, aprendizaje o testimonio a otra persona.", pts: 15 },
+      { id: "memory", title: "Verso en la memoria", desc: "Aprende y repite el verso o frase guía de la semana.", pts: 15 },
+      { id: "service", title: "Acto de servicio", desc: "Haz una acción concreta que beneficie a alguien de tu entorno.", pts: 20 },
+      { id: "council", title: "Reunión o alianza", desc: "Participa con tu equipo, líder o compañero de campaña.", pts: 15 }
+    ];
+
+    const territories = [
+      { id: "babylon", title: "Babilonia", desc: "Derrota la soberbia y el deseo de dominar a otros.", pts: 45 },
+      { id: "persia", title: "Medo-Persa", desc: "Vence la rigidez y aprende a obedecer con sabiduría.", pts: 45 },
+      { id: "greece", title: "Grecia", desc: "Somete el orgullo intelectual y busca discernimiento.", pts: 45 },
+      { id: "rome", title: "Roma", desc: "Domina el ego, la presión y la necesidad de aplauso.", pts: 45 },
+      { id: "assyria", title: "Asiria", desc: "Enfrenta el temor y avanza aunque haya oposición.", pts: 45 },
+      { id: "wilderness", title: "Desierto", desc: "Permanece fiel cuando nadie está mirando.", pts: 45 }
+    ];
+
+    const roleContent = {
+      Cronista: [
+        ["Archivo mayor", "Registra el avance de los reyes o señores regionales, sus reinos, sus puntos y sus conquistas."],
+        ["Autoridad de memoria", "El Cronista ordena la historia para que cada reino responda por sus decisiones."]
+      ],
+      Rey: [
+        ["Mandato regional", "Tu misión es nombrar tu región, animar a tus guerreros y registrar su avance."],
+        ["Sello de liderazgo", "Una región crece cuando su líder convierte dirección en movimiento."]
+      ],
+      Centinela: [
+        ["Vigilia", "Observa hábitos, riesgos y señales tempranas antes de que se vuelvan derrota."],
+        ["Torre", "El centinela cuida el futuro mirando con atención el presente."]
+      ],
+      Guerrero: [
+        ["Juramento", "Esta semana avanzo con disciplina, verdad y valentía."],
+        ["Marca de honor", "Un guerrero gana cuando convierte una buena decisión en hábito."]
+      ]
+    };
+
+    let state = {
+      name: "",
+      pass: "",
+      role: "",
+      kingdom: "",
+      region: "",
+      week: 1,
+      maxW: 1,
+      isEditing: false,
+      view: "missions"
+    };
+
+    function initApp(event) {
+      event.preventDefault();
+      state.name = document.getElementById("inName").value.trim();
+      state.pass = document.getElementById("inPass").value.trim();
+      state.role = document.getElementById("role").value;
+      state.kingdom = document.getElementById("kingdom").value.trim();
+      state.region = document.getElementById("regionName").value.trim();
+      if (!state.name || !state.pass || !state.kingdom) return toast("Completa tu nombre, clave y reino.");
+      if (state.role === "Rey" && !state.region) return toast("Dale un nombre a tu región.");
+
+      const profileKey = profileStorageKey();
+      const profile = JSON.parse(localStorage.getItem(profileKey) || "{}");
+      state.maxW = parseInt(profile.maxW || "1", 10);
+      state.week = state.maxW;
+      localStorage.setItem(profileKey, JSON.stringify({ role: state.role, kingdom: state.kingdom, region: state.region, maxW: state.maxW }));
+
+      document.getElementById("authScreen").classList.add("hidden");
+      document.getElementById("mainApp").classList.remove("hidden");
+      renderShell();
+      renderStaticSections();
+      loadWeek();
+    }
+
+    function profileStorageKey() {
+      return `cr_profile_${state.name}_${state.pass}`;
+    }
+
+    function weekStorageKey() {
+      return `cr_week_${state.name}_${state.pass}_${state.week}`;
+    }
+
+    function emptyWeek() {
+      return {
+        missions: {},
+        territories: {},
+        decision: "",
+        verse: "",
+        diary: "",
+        roleNotes: {},
+        warriors: Array.from({ length: 15 }, (_, i) => ({ name: `Guerrero ${i + 1}`, points: "", note: "" })),
+        royalRecords: Array.from({ length: 10 }, (_, i) => ({ king: `Líder ${i + 1}`, kingdom: "", points: "", territories: "" }))
+      };
+    }
+
+    function displayRole() {
+      return state.role === "Rey" ? "Señor de la región" : state.role;
+    }
+
+    function playerBaseName() {
+      return state.role === "Rey" && state.region ? state.region : state.kingdom;
+    }
+
+    function toggleRegionField() {
+      const isRegionLord = document.getElementById("role").value === "Rey";
+      document.getElementById("regionField").classList.toggle("hidden", !isRegionLord);
+      document.getElementById("regionName").required = isRegionLord;
+    }
+
+    function renderShell() {
+      const baseLine = state.role === "Rey" ? `${state.region} · ${state.kingdom}` : state.kingdom;
+      document.getElementById("uDisplay").textContent = `${state.name}, ${displayRole()}`;
+      document.getElementById("roleLine").textContent = `${baseLine} · Semana ${state.week} · Tu registro personal de la campaña`;
+      document.getElementById("bannerTitle").textContent = playerBaseName();
+      document.getElementById("roleBadge").textContent = displayRole();
+      document.getElementById("weekBadge").textContent = `Semana ${state.week}`;
+      document.getElementById("weekLabel").textContent = `Semana ${state.week}`;
+      document.getElementById("councilTitle").textContent = state.role === "Cronista" ? "Consejo del cronista" : state.role === "Rey" ? "Consejo del señor de la región" : `Consejo del ${state.role.toLowerCase()}`;
+      document.getElementById("councilIntro").textContent = state.role === "Cronista"
+        ? "El Cronista ocupa la primera línea jerárquica: guarda el mapa de reyes, reinos, puntos y territorios."
+        : "Cada rol tiene una forma distinta de registrar su aporte al juego.";
+      document.getElementById("kingPanel").classList.toggle("hidden", state.role !== "Rey");
+      document.getElementById("scribePanel").classList.toggle("hidden", state.role !== "Cronista");
+    }
+
+    function renderStaticSections() {
+      document.getElementById("missionGrid").innerHTML = missions.map(item => `
+        <label class="mission-card" for="m-${item.id}">
+          <input id="m-${item.id}" type="checkbox" onchange="save()">
+          <span>
+            <h3>${item.title}</h3>
+            <p>${item.desc}</p>
+          </span>
+          <span class="points">${item.pts}</span>
+        </label>
+      `).join("");
+
+      document.getElementById("kingdomGrid").innerHTML = territories.map(item => `
+        <label class="kingdom-card" for="k-${item.id}">
+          <span class="kingdom-head">
+            <input id="k-${item.id}" type="checkbox" onchange="save()">
+            <span>
+              <h3>${item.title}</h3>
+              <p>${item.desc}</p>
+            </span>
+          </span>
+          <span class="points">${item.pts} pts</span>
+        </label>
+      `).join("");
+
+      document.getElementById("roleTools").innerHTML = roleContent[state.role].map((item, index) => `
+        <div class="role-card">
+          <h3>${item[0]}</h3>
+          <p>${item[1]}</p>
+          <textarea id="roleNote${index}" oninput="save()" placeholder="Añade tu registro personal de ${item[0].toLowerCase()}."></textarea>
+        </div>
+      `).join("");
+
+      const warriors = Array.from({ length: 15 }, (_, i) => i);
+      document.getElementById("warriorInputs").innerHTML = warriors.map(i => `
+        <div class="warrior-row">
+          <input id="wName${i}" type="text" placeholder="Guerrero ${i + 1}" oninput="save()">
+          <input id="wPts${i}" type="number" min="0" placeholder="Pts" oninput="save()">
+          <input id="wNote${i}" type="text" placeholder="Nota breve" oninput="save()">
+        </div>
+      `).join("");
+
+      const royalRecords = Array.from({ length: 10 }, (_, i) => i);
+      document.getElementById("scribeInputs").innerHTML = royalRecords.map(i => `
+        <div class="scribe-row">
+          <input id="rKing${i}" type="text" placeholder="Rey o señor regional ${i + 1}" oninput="save()">
+          <input id="rKingdom${i}" type="text" placeholder="Reino" oninput="save()">
+          <input id="rPts${i}" type="number" min="0" placeholder="Pts" oninput="save()">
+          <input id="rTerritories${i}" type="text" placeholder="Territorios conquistados" oninput="save()">
+        </div>
+      `).join("");
+    }
+
+    function showView(view) {
+      state.view = view;
+      document.querySelectorAll(".view").forEach(el => el.classList.add("hidden"));
+      document.querySelectorAll(".tab").forEach(el => el.classList.remove("active"));
+      document.getElementById(`view-${view}`).classList.remove("hidden");
+      document.getElementById(`tab-${view}`).classList.add("active");
+    }
+
+    function collectData() {
+      const data = emptyWeek();
+      missions.forEach(item => data.missions[item.id] = document.getElementById(`m-${item.id}`).checked);
+      territories.forEach(item => data.territories[item.id] = document.getElementById(`k-${item.id}`).checked);
+      data.decision = document.getElementById("decision").value;
+      data.verse = document.getElementById("verse").value;
+      data.diary = document.getElementById("diary").value;
+      roleContent[state.role].forEach((_, index) => data.roleNotes[index] = document.getElementById(`roleNote${index}`).value);
+
+      if (state.role === "Rey") {
+        data.warriors = Array.from({ length: 15 }, (_, i) => ({
+          name: document.getElementById(`wName${i}`).value || `Guerrero ${i + 1}`,
+          points: document.getElementById(`wPts${i}`).value,
+          note: document.getElementById(`wNote${i}`).value
+        }));
+      }
+
+      if (state.role === "Cronista") {
+        data.royalRecords = Array.from({ length: 10 }, (_, i) => ({
+          king: document.getElementById(`rKing${i}`).value || `Líder ${i + 1}`,
+          kingdom: document.getElementById(`rKingdom${i}`).value,
+          points: document.getElementById(`rPts${i}`).value,
+          territories: document.getElementById(`rTerritories${i}`).value
+        }));
+      }
+      return data;
+    }
+
+    function save() {
+      if (state.week < state.maxW && !state.isEditing) return;
+      const data = collectData();
+      localStorage.setItem(weekStorageKey(), JSON.stringify(data));
+      calcPoints(data);
+    }
+
+    function loadWeek() {
+      renderShell();
+      const raw = localStorage.getItem(weekStorageKey());
+      const data = raw ? { ...emptyWeek(), ...JSON.parse(raw) } : emptyWeek();
+
+      missions.forEach(item => document.getElementById(`m-${item.id}`).checked = Boolean(data.missions[item.id]));
+      territories.forEach(item => document.getElementById(`k-${item.id}`).checked = Boolean(data.territories[item.id]));
+      document.getElementById("decision").value = data.decision || "";
+      document.getElementById("verse").value = data.verse || "";
+      document.getElementById("diary").value = data.diary || "";
+      roleContent[state.role].forEach((_, index) => document.getElementById(`roleNote${index}`).value = data.roleNotes[index] || "");
+
+      if (state.role === "Rey") {
+        data.warriors.forEach((warrior, i) => {
+          document.getElementById(`wName${i}`).value = warrior.name || `Guerrero ${i + 1}`;
+          document.getElementById(`wPts${i}`).value = warrior.points || "";
+          document.getElementById(`wNote${i}`).value = warrior.note || "";
+        });
+      }
+
+      if (state.role === "Cronista") {
+        data.royalRecords.forEach((record, i) => {
+          document.getElementById(`rKing${i}`).value = record.king || `Líder ${i + 1}`;
+          document.getElementById(`rKingdom${i}`).value = record.kingdom || "";
+          document.getElementById(`rPts${i}`).value = record.points || "";
+          document.getElementById(`rTerritories${i}`).value = record.territories || "";
+        });
+      }
+
+      const isLocked = state.week < state.maxW && !state.isEditing;
+      document.querySelectorAll("#mainApp input, #mainApp textarea").forEach(input => input.disabled = isLocked);
+      document.getElementById("lockedNotice").classList.toggle("hidden", !isLocked);
+      calcPoints(data);
+    }
+
+    function calcPoints(data) {
+      const missionPoints = missions.reduce((sum, item) => sum + (data.missions[item.id] ? item.pts : 0), 0);
+      const territoryPoints = territories.reduce((sum, item) => sum + (data.territories[item.id] ? item.pts : 0), 0);
+      const journalPoints = Math.min(70, Math.floor(((data.decision || "").length + (data.verse || "").length + (data.diary || "").length) / 6));
+      const rolePoints = Object.values(data.roleNotes || {}).reduce((sum, note) => sum + Math.min(20, Math.floor((note || "").length / 8)), 0);
+      const warriorPoints = state.role === "Rey" ? data.warriors.reduce((sum, warrior) => sum + parseInt(warrior.points || "0", 10), 0) : 0;
+      const royalPoints = state.role === "Cronista" ? data.royalRecords.reduce((sum, record) => sum + parseInt(record.points || "0", 10), 0) : 0;
+      const total = missionPoints + territoryPoints + journalPoints + rolePoints + warriorPoints + royalPoints;
+      const completed = Object.values(data.missions).filter(Boolean).length + Object.values(data.territories).filter(Boolean).length;
+      const royalCompleted = state.role === "Cronista" ? data.royalRecords.filter(record => record.kingdom || record.points || record.territories).length : 0;
+      const progressBase = state.role === "Cronista" ? missions.length + territories.length + 10 : missions.length + territories.length;
+      const progress = Math.min(100, Math.round(((completed + royalCompleted) / progressBase) * 100));
+
+      document.getElementById("ptsNumber").textContent = total;
+      document.getElementById("rankNumber").textContent = total >= 520 ? "V" : total >= 360 ? "IV" : total >= 220 ? "III" : total >= 100 ? "II" : "I";
+      document.querySelector("#progressBar span").style.width = `${progress}%`;
+      document.getElementById("progressBar").setAttribute("aria-valuenow", progress);
+    }
+
+    function changeWeek(delta) {
+      const next = Math.max(1, state.week + delta);
+      state.week = next;
+      state.isEditing = false;
+      loadWeek();
+    }
+
+    function sealWeek() {
+      if (!confirm(`¿Sellar la semana ${state.week}? Quedará como registro histórico.`)) return;
+      save();
+      state.maxW = Math.max(state.maxW, state.week + 1);
+      state.isEditing = false;
+      localStorage.setItem(profileStorageKey(), JSON.stringify({ role: state.role, kingdom: state.kingdom, region: state.region, maxW: state.maxW }));
+      state.week = state.maxW;
+      loadWeek();
+      toast("Semana sellada. La campaña avanza.");
+    }
+
+    function editSealedWeek() {
+      state.isEditing = true;
+      loadWeek();
+      toast("Modo edición activado para esta semana.");
+    }
+
+    function restartWeek() {
+      if (!confirm(`¿Reiniciar los datos de la semana ${state.week}?`)) return;
+      localStorage.removeItem(weekStorageKey());
+      state.isEditing = true;
+      loadWeek();
+      toast("Semana reiniciada.");
+    }
+
+    function exportChronicle() {
+      const data = collectData();
+      const report = {
+        jugador: state.name,
+        reino: state.kingdom,
+        region: state.region,
+        rol: state.role,
+        rolVisible: displayRole(),
+        semana: state.week,
+        puntos: document.getElementById("ptsNumber").textContent,
+        fechaExportacion: new Date().toLocaleString(),
+        registro: data
+      };
+      const blob = new Blob([JSON.stringify(report, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `cronicas-${state.name}-semana-${state.week}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast("Crónica exportada.");
+    }
+
+    function logout() {
+      location.reload();
+    }
+
+    function toast(message) {
+      const box = document.getElementById("toast");
+      box.textContent = message;
+      box.classList.add("show");
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => box.classList.remove("show"), 2400);
+    }
+
+    toggleRegionField();
+  </script>
+</body>
+</html>
